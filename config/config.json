@@ -2,5 +2,5 @@
     "__comment_runAs": "if the application should run as host or client (default: client)",
     "runAs": "client",
     "__comment_appMode": "User Interface in which the application should run in the current session (GUI or CLI) (default: gui)",
-    "interfaceMode": "gui"
+    "interfaceMode": "cli"
 }
