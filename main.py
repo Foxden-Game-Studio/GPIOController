@@ -26,7 +26,9 @@ def initApplication():
     
     # checking interface mode to be ether gui or cli
     if interfaceMode == '':
-        interfaceMode = 'gui' # default is gui        
+        interfaceMode = 'gui' # default is gui
+    elif interfaceMode == 'cli':
+        runAs = 'host' # in cli only host
     
     # write pre launch information to configuration file
     configuration.writeFile(configFilePath, data)

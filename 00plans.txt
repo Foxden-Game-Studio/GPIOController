@@ -1,0 +1,5 @@
+CLI:
+    only Host
+
+GUI:
+    host or client
