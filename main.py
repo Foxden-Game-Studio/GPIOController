@@ -22,7 +22,7 @@ def initApplication():
     
     # checking if running ether as host or client
     if runAs == '':
-        runAs == 'client' # default is client
+        runAs == 'client' # type: ignore # default is client
     
     # checking interface mode to be ether gui or cli
     if interfaceMode == '':
