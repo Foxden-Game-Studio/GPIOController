@@ -1,6 +1,7 @@
 import logging
 import os
 from datetime import datetime
+import subprocess
 
 log_dir = "logs"  # Directory to store logs
 max_files = 5 # Max file count
@@ -51,20 +52,34 @@ def setuplogger():
     with open(last_run_file, "w") as f:
         f.write(current_run_time)
 
-    # Configure the logger to write to the new latest.log file
-    logging.basicConfig(
-        filename=latest_log_file,
-        level=logging.DEBUG,
-        format="%(asctime)s - %(levelname)s - %(message)s"
+    # Create a logger
+    logger = logging.getLogger("dual_logger")
+    logger.setLevel(logging.DEBUG)
+    
+    # Prevent propagation to the root logger
+    logger.propagate = False
+
+    # Log formatter
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+    # File handler for logging to a file
+    file_handler = logging.FileHandler(latest_log_file)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+
+    # Create a second terminal for logging
+    second_terminal = subprocess.Popen(
+        ["x-terminal-emulator", "-e", "tail -f /tmp/log_output"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
 
-    # Also log to the console
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.DEBUG)
-    console_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-    console_handler.setFormatter(console_formatter)
-    logging.getLogger().addHandler(console_handler)
+    # Log to the second terminal
+    temp_log_path = '/tmp/log_output'
+    with open(temp_log_path, 'w') as temp_log_file:
+        temp_log_file.write("")  # Ensure the file is created/cleared
+    terminal_handler = logging.FileHandler(temp_log_path)
+    terminal_handler.setFormatter(formatter)
+    logger.addHandler(terminal_handler)
 
-    logging.info("Logger initialized. Logging to 'latest.log'.")
+    logger.info("Logger initialized. Logging to 'latest.log'.")
     
-    return logging.getLogger()
+    return logger
